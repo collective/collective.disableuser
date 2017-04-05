@@ -1,0 +1,5 @@
+====================
+collective.disableuser
+====================
+
+User documentation
