@@ -1,0 +1,38 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <plone:service
+    method="GET"
+    name="@disabledusers"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".Get"
+    permission="cmf.ManagePortal"
+    />
+
+  <plone:service
+    method="PATCH"
+    name="@disabledusers"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".Patch"
+    permission="cmf.ManagePortal"
+    />
+
+  <plone:service
+    method="POST"
+    name="@disabledusers"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".Post"
+    permission="cmf.ManagePortal"
+    />
+
+  <plone:service
+    method="DELETE"
+    name="@disabledusers"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".Delete"
+    permission="cmf.ManagePortal"
+    />
+
+</configure>
