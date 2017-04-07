@@ -25,4 +25,4 @@ after_success:
   - coveralls
 notifications:
   email:
-    - roel@jaroel.nl
+    - roel@jaroel.nl tisto@plone.org
