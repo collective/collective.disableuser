@@ -67,14 +67,33 @@ Contribute
 - Documentation: https://docs.plone.org/foo/bar
 
 
+Credits
+-------
+
+.. image:: https://kitconcept.com/logo.png
+   :height: 461px
+   :width: 100px
+   :scale: 100 %
+   :alt: kitconcept
+   :align: center
+   :target: https://www.kitconcept.com/
+
+This plugin is developed and maintained by `kitconcept`_.
+
+If you are having issues, please let us know.
+
+
 Support
 -------
 
-If you are having issues, please let us know.
-We have a mailing list located at: project@example.com
+If you are having issues, please let us know via the github issue tracker at
+https://github.com/collective/collective.disableuser/issues.
 
 
 License
 -------
 
 The project is licensed under the GPLv2.
+
+
+.. _`kitconcept`: https://kitconcept.com
