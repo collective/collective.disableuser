@@ -6,6 +6,25 @@
 collective.disableuser
 ==============================================================================
 
+.. image:: https://secure.travis-ci.org/collective/collective.disableuser.png
+    :target: http://travis-ci.org/collective/collective.disableuser
+
+.. image:: https://coveralls.io/repos/collective/collective.disableuser/badge.png?branch=master
+    :target: https://coveralls.io/r/collective/collective.disableuser
+
+.. image:: https://img.shields.io/pypi/v/collective.disableuser.svg
+    :target: https://pypi.python.org/pypi/collective.disableuser/
+    :alt: Latest Version
+
+.. image:: https://img.shields.io/pypi/status/collective.disableuser.svg
+    :target: https://pypi.python.org/pypi/collective.disableuser/
+    :alt: Egg Status
+
+.. image:: https://img.shields.io/pypi/l/collective.disableuser.svg
+    :target: https://pypi.python.org/pypi/collective.disableuser/
+    :alt: License
+
+
 This Plone addon allows a site administrator to block and unblock users.
 
 Features
@@ -13,7 +32,6 @@ Features
 
 - Block/unblock users through the Plone User controlpanel
 - Block/unblock users through a REST endpoint
-
 
 
 Translations
