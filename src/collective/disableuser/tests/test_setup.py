@@ -48,4 +48,7 @@ class TestUninstall(unittest.TestCase):
         from collective.disableuser.interfaces import \
             ICollectivedisableuserLayer
         from plone.browserlayer import utils
-        self.assertNotIn(ICollectivedisableuserLayer, utils.registered_layers())
+        self.assertNotIn(
+            ICollectivedisableuserLayer,
+            utils.registered_layers()
+        )

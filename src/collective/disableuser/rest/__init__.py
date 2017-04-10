@@ -1,15 +1,12 @@
-from plone.restapi.services import Service
-from zope.component.hooks import getSite
-from zope.component import queryMultiAdapter
-from zope.interface import alsoProvides
-from plone.restapi.interfaces import ISerializeToJson
-from Products.CMFCore.utils import getToolByName
-
+# -*- coding: utf-8 -*-
 from collective.disableuser import PAS_ID
 from persistent.list import PersistentList
+from plone import api
+from plone.restapi.services import Service
+from zope.interface import alsoProvides
 
-import plone
 import json
+import plone
 
 
 class Get(Service):
@@ -17,8 +14,7 @@ class Get(Service):
     """
 
     def reply(self):
-        portal = getSite()
-        acl = getToolByName(portal, 'acl_users')
+        acl = api.portal.get_tool('acl_users')
         plugin = acl[PAS_ID]
         return json.dumps(list(plugin.disabled_user_ids))
 
@@ -28,10 +24,9 @@ class Patch(Service):
     """
 
     def reply(self):
-        portal = getSite()
-        acl = getToolByName(portal, 'acl_users')
+        acl = api.portal.get_tool('acl_users')
         plugin = acl[PAS_ID]
-        data = json.loads(self.request.get('BODY', '{}'))
+        data = json.loads(self.request.get('BODY', '{}'))  # noqa: P103
 
         for userid, disabled in data.items():
             if disabled:
@@ -54,10 +49,9 @@ class Post(Service):
             alsoProvides(self.request,
                          plone.protect.interfaces.IDisableCSRFProtection)
 
-        portal = getSite()
-        acl = getToolByName(portal, 'acl_users')
+        acl = api.portal.get_tool('acl_users')
         plugin = acl[PAS_ID]
-        data = json.loads(self.request.get('BODY', '{}'))
+        data = json.loads(self.request.get('BODY', '{}'))  # noqa: P103
 
         disabled_userids = [
             userid for userid, disabled in data.items() if disabled
@@ -72,8 +66,7 @@ class Delete(Service):
     """
 
     def reply(self):
-        portal = getSite()
-        acl = getToolByName(portal, 'acl_users')
+        acl = api.portal.get_tool('acl_users')
         plugin = acl[PAS_ID]
 
         plugin.disabled_user_ids = PersistentList()
