@@ -3,6 +3,10 @@
 
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
+PAS_ID = 'disableuser'
+PAS_TITLE = 'Disable User Plugin'
+PROP_DISABLED = 'disabled'
+
 
 class ICollectivedisableuserLayer(IDefaultBrowserLayer):
     """Marker interface that defines a browser layer."""

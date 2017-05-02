@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from collective.disableuser import PAS_ID
-from persistent.list import PersistentList
 from plone import api
 from plone.restapi.services import Service
 from zope.interface import alsoProvides
@@ -8,14 +6,15 @@ from zope.interface import alsoProvides
 import json
 import plone
 
+from collective.disableuser.interfaces import PROP_DISABLED
+
 
 def get_disabled_userids(self):
-    membership = api.portal.get_tool('portal_membership')
-    disabled_member_ids = [
-        member.getId() for member in membership.listMembers()
-        if member.getProperty("disabled", False)
+    disabled_userids = [
+        user.getId() for user in api.user.get_users()
+        if user.getProperty(PROP_DISABLED, False)
     ]
-    return disabled_member_ids
+    return disabled_userids
 
 
 class Get(Service):
@@ -35,9 +34,7 @@ class Patch(Service):
 
         for userid, disabled in data.items():
             user = api.user.get(userid=userid)
-            user.setMemberProperties(
-                mapping={'disabled': disabled, }
-            )
+            user.setMemberProperties(mapping={PROP_DISABLED: disabled})
 
         return json.dumps(get_disabled_userids(self))
 
@@ -58,11 +55,9 @@ class Post(Service):
             userid for userid, disabled in data.items() if disabled
         ]
 
-        membership = api.portal.get_tool('portal_membership')
-        for member in membership.listMembers():
-            member.setMemberProperties(
-                mapping={'disabled': member.getId() in disabled_userids}
-            )
+        for user in api.user.get_users():
+            disabled = user.getId() in disabled_userids
+            user.setMemberProperties(mapping={PROP_DISABLED: disabled})
 
         return json.dumps(get_disabled_userids(self))
 
@@ -72,12 +67,9 @@ class Delete(Service):
     """
 
     def reply(self):
-        membership = api.portal.get_tool('portal_membership')
-        for member in membership.listMembers():
-            if not member.getProperty('disabled', False):
+        for user in api.user.get_users():
+            if not user.getProperty(PROP_DISABLED, False):
                 continue
-            member.setMemberProperties(
-                mapping={'disabled', False}
-            )
+            user.setMemberProperties(mapping={PROP_DISABLED: False})
 
         return json.dumps(get_disabled_userids(self))

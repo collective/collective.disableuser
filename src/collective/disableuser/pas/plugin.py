@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 from AccessControl import Unauthorized
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from persistent.list import PersistentList
 from plone import api
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin  # NOQA
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from zope.i18nmessageid import MessageFactory
 from zope.interface import implementer
+
+from collective.disableuser.interfaces import PROP_DISABLED
+
 
 _ = MessageFactory('collective.disableuser.pas')
 
@@ -51,10 +53,9 @@ class DisableUserPlugin(BasePlugin):
 
     @security.private
     def is_disabled(self, credentials):
-        membership = api.portal.get_tool('portal_membership')
-        for user_id in self._get_userids(credentials):
-            member = membership.getMemberById(user_id)
-            if member.getProperty('disabled', False):
+        for userid in self._get_userids(credentials):
+            member = api.user.get(userid=userid)
+            if member.getProperty(PROP_DISABLED, False):
                 return True
 
     @security.private

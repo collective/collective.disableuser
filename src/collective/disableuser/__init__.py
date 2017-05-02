@@ -6,9 +6,6 @@ from zope.i18nmessageid import MessageFactory
 
 from .pas import plugin
 
-PAS_ID = 'disableuser'
-PAS_TITLE = 'Disable User Plugin'
-
 
 _ = MessageFactory('collective.disableuser')
 

@@ -3,7 +3,7 @@ from plone import api
 from Products.CMFPlone.interfaces import INonInstallable
 from Products.PlonePAS.setuphandlers import activatePluginInterfaces
 from zope.interface import implementer
-from . import PAS_ID, PAS_TITLE
+from .interfaces import PAS_ID, PAS_TITLE, PROP_DISABLED
 from .pas.plugin import DisableUserPlugin
 
 
@@ -40,14 +40,16 @@ def removePASPlugin(portal):
 
 def setup_memberdata(context):
     memberdata = api.portal.get_tool('portal_memberdata')
-    if not memberdata.hasProperty("disabled"):
-        memberdata.manage_addProperty(id="disabled", value="", type="boolean")
+    if not memberdata.hasProperty(PROP_DISABLED):
+        memberdata.manage_addProperty(
+            id=PROP_DISABLED, value='', type='boolean'
+        )
 
 
 def remove_memberdata(context):
     memberdata = api.portal.get_tool('portal_memberdata')
-    if memberdata.hasProperty("disabled"):
-        memberdata.manage_delProperty(id="disabled")
+    if memberdata.hasProperty(PROP_DISABLED):
+        memberdata.manage_delProperty(id=PROP_DISABLED)
 
 
 def post_install(context):
