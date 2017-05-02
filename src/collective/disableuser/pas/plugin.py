@@ -40,7 +40,6 @@ class DisableUserPlugin(BasePlugin):
     def __init__(self, id_, title=None):
         self._setId(id_)
         self.title = title
-        self.disabled_user_ids = PersistentList()
 
     # IAuthenticationPlugin implementation
     @security.private
@@ -52,8 +51,10 @@ class DisableUserPlugin(BasePlugin):
 
     @security.private
     def is_disabled(self, credentials):
+        membership = api.portal.get_tool('portal_membership')
         for user_id in self._get_userids(credentials):
-            if user_id in self.disabled_user_ids:
+            member = membership.getMemberById(user_id)
+            if member.getProperty('disabled', False):
                 return True
 
     @security.private

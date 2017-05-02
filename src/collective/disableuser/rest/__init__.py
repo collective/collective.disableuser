@@ -9,14 +9,21 @@ import json
 import plone
 
 
+def get_disabled_userids(self):
+    membership = api.portal.get_tool('portal_membership')
+    disabled_member_ids = [
+        member.getId() for member in membership.listMembers()
+        if member.getProperty("disabled", False)
+    ]
+    return disabled_member_ids
+
+
 class Get(Service):
     """ Lists all disabled users
     """
 
     def reply(self):
-        acl = api.portal.get_tool('acl_users')
-        plugin = acl[PAS_ID]
-        return json.dumps(list(plugin.disabled_user_ids))
+        return json.dumps(get_disabled_userids(self))
 
 
 class Patch(Service):
@@ -24,19 +31,15 @@ class Patch(Service):
     """
 
     def reply(self):
-        acl = api.portal.get_tool('acl_users')
-        plugin = acl[PAS_ID]
         data = json.loads(self.request.get('BODY', '{}'))  # noqa: P103
 
         for userid, disabled in data.items():
-            if disabled:
-                if userid not in plugin.disabled_user_ids:
-                    plugin.disabled_user_ids.append(userid)
-            else:
-                if userid in plugin.disabled_user_ids:
-                    plugin.disabled_user_ids.remove(userid)
+            user = api.user.get(userid=userid)
+            user.setMemberProperties(
+                mapping={'disabled': disabled, }
+            )
 
-        return json.dumps(list(plugin.disabled_user_ids))
+        return json.dumps(get_disabled_userids(self))
 
 
 class Post(Service):
@@ -49,16 +52,19 @@ class Post(Service):
             alsoProvides(self.request,
                          plone.protect.interfaces.IDisableCSRFProtection)
 
-        acl = api.portal.get_tool('acl_users')
-        plugin = acl[PAS_ID]
         data = json.loads(self.request.get('BODY', '{}'))  # noqa: P103
 
         disabled_userids = [
             userid for userid, disabled in data.items() if disabled
         ]
 
-        plugin.disabled_user_ids = PersistentList(disabled_userids)
-        return json.dumps(list(plugin.disabled_user_ids))
+        membership = api.portal.get_tool('portal_membership')
+        for member in membership.listMembers():
+            member.setMemberProperties(
+                mapping={'disabled': member.getId() in disabled_userids}
+            )
+
+        return json.dumps(get_disabled_userids(self))
 
 
 class Delete(Service):
@@ -66,8 +72,12 @@ class Delete(Service):
     """
 
     def reply(self):
-        acl = api.portal.get_tool('acl_users')
-        plugin = acl[PAS_ID]
+        membership = api.portal.get_tool('portal_membership')
+        for member in membership.listMembers():
+            if not member.getProperty('disabled', False):
+                continue
+            member.setMemberProperties(
+                mapping={'disabled', False}
+            )
 
-        plugin.disabled_user_ids = PersistentList()
-        return json.dumps(list(plugin.disabled_user_ids))
+        return json.dumps(get_disabled_userids(self))

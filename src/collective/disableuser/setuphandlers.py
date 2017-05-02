@@ -38,13 +38,27 @@ def removePASPlugin(portal):
         pas._delObject(PAS_ID)
 
 
+def setup_memberdata(context):
+    memberdata = api.portal.get_tool('portal_memberdata')
+    if not memberdata.hasProperty("disabled"):
+        memberdata.manage_addProperty(id="disabled", value="", type="boolean")
+
+
+def remove_memberdata(context):
+    memberdata = api.portal.get_tool('portal_memberdata')
+    if memberdata.hasProperty("disabled"):
+        memberdata.manage_delProperty(id="disabled")
+
+
 def post_install(context):
     """Post install script"""
     # Do something at the end of the installation of this package.
     installPASPlugin(context)
+    setup_memberdata(context)
 
 
 def uninstall(context):
     """Uninstall script"""
     # Do something at the end of the uninstallation of this package.
     removePASPlugin(context)
+    remove_memberdata(context)
